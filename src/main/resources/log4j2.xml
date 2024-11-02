@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%d{HH:mm:ss.SSS} [%t] %highlight{%-5level}{FATAL=red bright, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=blue} %logger{36} - %msg%n" />
+        </Console>
+        <Gelf name="gelf" host="${env:GELF_HOST}" port="${env:GELF_PORT}" version="1.0" extractStackTrace="true"
+              filterStackTrace="true" mdcProfiling="true" includeFullMdc="true" maximumMessageSize="8192"
+              originHost="${env:ENVIRONMENT}"
+              ignoreExceptions="true">
+
+            <Field name="timestamp" pattern="%d{dd MMM yyyy HH:mm:ss,SSS}" />
+            <Field name="level" pattern="%level" />
+            <Field name="level_name" pattern="%level" />
+            <Field name="simpleClassName" pattern="%C{1}" />
+            <Field name="className" pattern="%C" />
+            <Field name="requestID" pattern="%X{requestID}" />
+            <Field name="server" pattern="${env:ENVIRONMENT}" />
+            <Field name="app" pattern="busAPI" />
+            <Field name="short_message" pattern="%logger{36} - %msg%n" />
+        </Gelf>
+    </Appenders>
+    <Loggers>
+        <Root level="${env:LOG_LEVEL}">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="gelf"/>
+        </Root>
+    </Loggers>
+</Configuration>
